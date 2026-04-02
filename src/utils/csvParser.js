@@ -77,7 +77,7 @@ function getDayName(dateStr) {
  * Returns an array of exam objects sorted by date.
  */
 export async function loadExams() {
-  const response = await fetch('/data.csv');
+  const response = await fetch('./data.csv');
   const csvText = await response.text();
 
   return new Promise((resolve, reject) => {

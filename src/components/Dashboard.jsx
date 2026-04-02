@@ -21,9 +21,13 @@ export default function Dashboard({ onNavigateSettings }) {
   const futureExams = selectedExams.filter((e) => daysFromNow(e.date) > 0);
   const nextExam = futureExams.length > 0 ? futureExams[0] : (todayExams.length > 0 ? todayExams[0] : null);
 
-  // Countdown calculation for next exam
-  function getCountdown(examDate) {
-    const examStart = new Date(examDate);
+  // Countdown calculation for next exam (counts down to exam start time)
+  function getCountdown(exam) {
+    const examStart = new Date(exam.date);
+    if (exam.timeStart) {
+      const [hours, minutes] = exam.timeStart.split(':').map(Number);
+      examStart.setHours(hours, minutes, 0, 0);
+    }
     const diff = examStart - now;
     if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -87,7 +91,7 @@ export default function Dashboard({ onNavigateSettings }) {
             )}
           </div>
           {daysFromNow(nextExam.date) >= 0 && (() => {
-            const cd = getCountdown(nextExam.date);
+            const cd = getCountdown(nextExam);
             const isUrgent = cd.days <= 1;
             return (
               <div className={`hero-countdown ${isUrgent ? 'urgent' : ''}`}>
